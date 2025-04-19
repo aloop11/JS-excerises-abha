@@ -58,31 +58,45 @@
     <label>Fahrenheit Temperature:</label>
     <span id="display-temp-f">TODO</span>
 
-
     <script type="text/javascript">
-
         console.log("---------------------")
         console.log("PART 1...")
-
-
-
-
+        
+        // Part 1: Basic temperature conversion
+        const celsiusTemp = -270;
+        const fahrenheitTemp = (celsiusTemp * 9/5) + 32;
+        
+        console.log("Celsius:", celsiusTemp + "°C");
+        console.log("Fahrenheit:", fahrenheitTemp + "°F");
 
         console.log("---------------------")
         console.log("PART 2...")
-
-
-
-
-
+        
+        // Part 2: Temperature conversion function
+        function calculateTemp(tempC) {
+            return (tempC * 9/5) + 32;
+        }
+        
+        // Test the function
+        const convertedTemp = calculateTemp(-270);
+        console.log("Input Celsius:", -270 + "°C");
+        console.log("Converted Fahrenheit:", convertedTemp + "°F");
 
         console.log("---------------------")
         console.log("PART 3...")
-
-
-
-
-
+        
+        // Part 3: Interactive temperature converter
+        document.getElementById('calculate').addEventListener('click', function() {
+            // Get the Celsius value from input
+            const inputTempC = parseFloat(document.getElementById('input-temp-c').value);
+            
+            // Calculate Fahrenheit temperature
+            const calculatedTempF = calculateTemp(inputTempC);
+            
+            // Display the result (rounded to 2 decimal places)
+            document.getElementById('display-temp-f').textContent = 
+                calculatedTempF.toFixed(2) + "°F";
+        });
     </script>
 </body>
 </html>

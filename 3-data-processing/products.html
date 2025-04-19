@@ -1,9 +1,29 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Products</title>
+    <style>
+        .product {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 400px;
+        }
+        .product img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .product p {
+            margin: 5px 0;
+        }
+        .price {
+            font-weight: bold;
+            color: #2a6496;
+        }
+    </style>
 </head>
 <body>
 
@@ -35,9 +55,8 @@
 
     <div id="display-products"></div>
 
-
     <script type="text/javascript">
-
+        // Took help from ChatGPT
         var products = [
             {
                 "name": "Textbook",
@@ -61,18 +80,66 @@
 
         console.log("---------------------")
         console.log("PART 1...")
-
-
-
-
-
+        
+        // A. Total number of products
+        console.log("A. Total number of products:", products.length);
+        
+        // B. Display each product's name and price
+        console.log("B. Product list:");
+        products.forEach(product => {
+            console.log(`${product.name}: $${product.price.toFixed(2)}`);
+        });
+        
+        // C. Filter products with price < $50
+        const matchingProducts = products.filter(product => product.price < 50);
+        console.log("C. Matching products (price < $50):", matchingProducts);
+        
+        // D. Number of matching products
+        console.log("D. Number of matching products:", matchingProducts.length);
 
         console.log("---------------------")
         console.log("PART 2...")
-
-
-
-
+        
+        // Populate the products display
+        const productsContainer = document.getElementById('display-products');
+        
+        products.forEach((product, index) => {
+            // Create product container div
+            const productDiv = document.createElement('div');
+            productDiv.className = 'product';
+            
+            // Add product image
+            const img = document.createElement('img');
+            img.src = product.imageURL;
+            img.alt = product.name;
+            productDiv.appendChild(img);
+            
+            // Add product name
+            const namePara = document.createElement('p');
+            namePara.textContent = product.name;
+            namePara.style.fontWeight = 'bold';
+            productDiv.appendChild(namePara);
+            
+            // Add product description
+            const descPara = document.createElement('p');
+            descPara.textContent = product.description;
+            productDiv.appendChild(descPara);
+            
+            // Add product price
+            const pricePara = document.createElement('p');
+            pricePara.className = 'price';
+            pricePara.textContent = `$${product.price.toFixed(2)}`;
+            productDiv.appendChild(pricePara);
+            
+            // Add to container
+            productsContainer.appendChild(productDiv);
+            
+            // Add horizontal rule (except after last product)
+            if (index < products.length - 1) {
+                const hr = document.createElement('hr');
+                productsContainer.appendChild(hr);
+            }
+        });
     </script>
 </body>
 </html>

@@ -46,23 +46,37 @@
     <label>Area:</label>
     <span id="display-area">TODO</span>
 
-
     <script type="text/javascript">
-
         console.log("---------------------")
         console.log("PART 1...")
-
-
-
-
-
+        
+        // Part 1: Function to calculate circle area
+        function calculateCircleArea(radius) {
+            return Math.PI * Math.pow(radius, 2);
+        }
+        
+        // Invoke the function with radius 9
+        const radius = 9;
+        const area = calculateCircleArea(radius);
+        
+        // Log the results to console
+        console.log("Radius:", radius);
+        console.log("Area:", area);
+        
         console.log("---------------------")
         console.log("PART 2...")
-
-
-
-
-
+        
+        // Part 2: Handle button click to calculate and display area
+        document.getElementById('calculate').addEventListener('click', function() {
+            // Get the radius value from input
+            const inputRadius = parseFloat(document.getElementById('input-radius').value);
+            
+            // Calculate the area
+            const calculatedArea = calculateCircleArea(inputRadius);
+            
+            // Display the area (rounded to 2 decimal places)
+            document.getElementById('display-area').textContent = calculatedArea.toFixed(2);
+        });
     </script>
 </body>
 </html>
