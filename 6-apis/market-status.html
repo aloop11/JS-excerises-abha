@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Market Status (JSON)</title>
+</head>
+<body>
+
+    <h1>Market Status (JSON)</h1>
+    <a href="../index.html">Home</a>
+
+    <h2>Dataset Information</h2>
+    <p>For this exercise, we will use data from the AlphaVantage API.
+        Specifically we will use the <a href="https://www.alphavantage.co/documentation/#market-status">"Market Status" endpoint</a>
+        to fetch information about the current status of major trading venues around the world.
+        Consult the API documentation to learn more.
+    </p>
+
+    <h2>Setup</h2>
+    <p>First obtain an AlphaVantage API Key, and supply it when prompted.</p>
+
+    <h2>Part 1</h2>
+    <p>
+        Write JavaScript code to answer the questions below.
+        Log each of the answers to the console.
+
+        <ol type="A">
+            <li>Fetch market status data from the API.</li>
+            <li>Display the number of markets.</li>
+            <li>Filter the markets to identify only those that have a market type of "Equity", and store them in a variable called <code>equityMarkets</code>.</li>
+            <li>Display the number of equity markets.</li>
+            <li>Loop through the equity markets and display the market type and region of each.</li>
+            <li>Use a find operation to identify the equity market that has a region of "United States", and store it in a variable called <code>market</code>.</li>
+            <li>Display information about the US market, including: the market type, the primary exchanges, the local open and close time, and the current market status. Format the market status using all capital letters.</li>
+        </ol>
+    </p>
+
+    <h2>Part 2</h2>
+    <p>
+        Write JavaScript code to answer the questions below.
+        Display the answers on the page in the designated areas.
+    </p>
+
+    <ol type="A">
+        <li>Using the designated <code>span</code> elements below,
+            display information about the US market, including it's region, market type,
+            primary exchanges, local open and close times, and current status.
+        </li>
+    </ol>
+
+    <hr>
+    <h2>Display</h2>
+
+    <div id="display-market-info">
+        <p>Region: <span id="display-region">Loading...</span></p>
+        <p>Market Type: <span id="display-type">Loading...</span></p>
+        <p>Primary Exchanges: <span id="display-exchanges">Loading...</span></p>
+        <p>Local Open: <span id="display-open">Loading...</span></p>
+        <p>Local Close: <span id="display-close">Loading...</span></p>
+        <p>Current Status: <span id="display-status">Loading...</span></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script type="text/javascript">
+        // Use one of the provided API keys
+        const apiKeys = [
+            "ZA7MCBB2Y439DIXR",
+            "JCF4BFJGSNYM93RD",
+            "51W3X1ISPF56U274",
+            "IGYFE57M3SORQ8J8",
+            "OPEKNZB4Q8AUFTDY",
+            "JYN0QT6BO4ZPV807",
+            "14SJGKTZQOG2TCYK"
+        ];
+        
+        // Select a random API key from the list
+        const apiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
+        
+        var requestUrl = `https://www.alphavantage.co/query?function=MARKET_STATUS&apikey=${apiKey}`;
+        
+        // Fallback URL in case of CORS issues
+        var corsProxyUrl = `https://cors-anywhere.herokuapp.com/${requestUrl}`;
+        
+        function fetchData(url) {
+            d3.json(url).then(function(data) {
+                console.log("Market Status Data:", data);
+                
+                if (!data || !data.markets) {
+                    throw new Error("Invalid data format received from API");
+                }
+                
+                const markets = data.markets;
+                
+                // Part 1B: Display the number of markets
+                console.log("Number of markets:", markets.length);
+                
+                // Part 1C: Filter to only Equity markets
+                const equityMarkets = markets.filter(market => market.market_type === "Equity");
+                console.log("Equity markets:", equityMarkets);
+                
+                // Part 1D: Display number of equity markets
+                console.log("Number of equity markets:", equityMarkets.length);
+                
+                // Part 1E: Loop through equity markets and display type and region
+                equityMarkets.forEach(market => {
+                    console.log(`Market Type: ${market.market_type}, Region: ${market.region}`);
+                });
+                
+                // Part 1F: Find US equity market
+                const market = equityMarkets.find(market => market.region === "United States");
+                console.log("US Market:", market);
+                
+                // Part 1G: Display US market info
+                if (market) {
+                    console.log("US Market Information:");
+                    console.log("Market Type:", market.market_type);
+                    console.log("Primary Exchanges:", market.primary_exchanges);
+                    console.log("Local Open:", market.local_open);
+                    console.log("Local Close:", market.local_close);
+                    console.log("Current Status:", market.current_status.toUpperCase());
+                    
+                    // Part 2A: Display US market info on the page
+                    document.getElementById("display-region").textContent = market.region;
+                    document.getElementById("display-type").textContent = market.market_type;
+                    document.getElementById("display-exchanges").textContent = market.primary_exchanges;
+                    document.getElementById("display-open").textContent = market.local_open;
+                    document.getElementById("display-close").textContent = market.local_close;
+                    document.getElementById("display-status").textContent = market.current_status.toUpperCase();
+                } else {
+                    console.log("US market not found");
+                    document.getElementById("display-market-info").innerHTML = 
+                        "<p>US market information not available in the response</p>";
+                }
+                
+            }).catch(function(error) {
+                console.error("Error with direct request:", error);
+                
+                // Try with CORS proxy if direct request fails
+                if (url === requestUrl) {
+                    console.log("Trying with CORS proxy...");
+                    fetchData(corsProxyUrl);
+                } else {
+                    console.error("Failed with CORS proxy too:", error);
+                    document.getElementById("display-market-info").innerHTML = 
+                        "<p>Error fetching market data. Please try again later.</p>";
+                }
+            });
+        }
+        
+        // Start with direct request
+        fetchData(requestUrl);
+    </script>
+</body>
+</html>

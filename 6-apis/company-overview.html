@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Overview (JSON)</title>
+</head>
+<body>
+
+    <h1>Company Overview (JSON)</h1>
+    <a href="../index.html">Home</a>
+
+    <h2>Dataset Information</h2>
+    <p>We use AlphaVantage's <a href="https://www.alphavantage.co/documentation/#company-overview">Company Overview API</a> to fetch financial data.</p>
+
+    <h2>Setup</h2>
+    <p>Supply your AlphaVantage API Key when prompted.</p>
+
+    <hr>
+
+    <label>Stock Symbol:</label>
+    <input id="input-symbol" type="text" placeholder="NFLX" value="NFLX">
+    <button id="lookup">Lookup</button>
+
+    <div id="display-company-info">
+        <p>Name: <span id="display-name">TODO</span></p>
+        <p>Description: <span id="display-description">TODO</span></p>
+        <p>Website: <a id="display-link" href="#TODO">TODO</a></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script type="text/javascript">
+        // Prompt user for API key if not in session storage
+        var apiKey = sessionStorage.getItem("ALPHAVANTAGE_API_KEY")
+        if (!apiKey) {
+            apiKey = prompt("Please enter your AlphaVantage API key:")
+            sessionStorage.setItem("ALPHAVANTAGE_API_KEY", apiKey)
+        }
+
+        // Main function
+        function lookupCompany() {
+            var symbol = document.getElementById("input-symbol").value.trim()
+            console.log("SYMBOL:", symbol)
+
+            var requestUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${apiKey}`
+
+            d3.json(requestUrl).then(function(data) {
+                console.log("RESPONSE:", data)
+
+                console.log("---------------------")
+                console.log("PART 1...")
+
+                // Log to console
+                console.log("Name:", data.Name)
+                console.log("Description:", data.Description)
+                console.log("Website:", data.Website)
+
+                console.log("---------------------")
+                console.log("PART 2...")
+
+                // Update DOM
+                document.getElementById("display-name").textContent = data.Name || "N/A"
+                document.getElementById("display-description").textContent = data.Description || "N/A"
+                var link = document.getElementById("display-link")
+                if (data.Website) {
+                    link.href = data.Website
+                    link.textContent = data.Website
+                } else {
+                    link.href = "#"
+                    link.textContent = "N/A"
+                }
+
+            }).catch(function(error) {
+                console.error("ERROR:", error)
+            })
+        }
+
+        // Run once on page load
+        window.onload = lookupCompany
+
+        // Run on button click
+        document.getElementById("lookup").addEventListener("click", lookupCompany, false)
+    </script>
+</body>
+</html>

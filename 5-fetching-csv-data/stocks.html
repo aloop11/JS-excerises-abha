@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stocks (CSV)</title>
+</head>
+<body>
+
+    <h1>Stocks (CSV)</h1>
+    <a href="../index.html">Home</a>
+
+    <h2>Dataset Information</h2>
+    <p>For this exercise, we will use a handful of CSV files that have been uploaded to the Internet.
+        The CSV files contains historical stock data for a number of companies.
+        There is a CSV file for each of the following symbols: AAPL, GOOGL, MSFT, NFLX, NVDA, and SPOT.
+        The name of each CSV file follows a consistent format (e.g.
+        <a href="https://raw.githubusercontent.com/prof-rossetti/intro-software-dev-python-book/refs/heads/main/docs/data/daily_adjusted_NFLX.csv">"daily_adjusted_NFLX.csv"</a>
+        for NFLX).
+        This data was originally obtained from the AlphaVantage API.
+    </p>
+
+    <h2>Part 1</h2>
+    <p>
+        Write JavaScript code to answer the questions below.
+        Log each of the answers to the console.
+    </p>
+
+    <h2>Part 2</h2>
+    <p>
+        Write JavaScript code to answer the questions below.
+        Display the answers on the page in the designated areas.
+    </p>
+
+    <hr>
+    <h2>Display</h2>
+    <p>Symbol: <span id="display-symbol">TODO</span></p>
+    <p>Earliest: <span id="display-earliest">TODO</span></p>
+    <p>Latest: <span id="display-latest">TODO</span></p>
+    <p>Percent Change: <span id="display-pct-change">TODO</span></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script type="text/javascript">
+
+        function formatUSD(value) {
+            return `$${parseFloat(value).toFixed(2)}`
+        }
+
+        function formatPct(value) {
+            return `${(value * 100).toFixed(2)}%`
+        }
+
+        var symbol = "NFLX" // You can change this to AAPL, GOOGL, MSFT, NVDA, SPOT
+        var filename = `daily_adjusted_${symbol}.csv`
+        var requestUrl = `https://raw.githubusercontent.com/prof-rossetti/intro-software-dev-python-book/refs/heads/main/docs/data/${filename}`
+
+        d3.csv(requestUrl).then(function(data) {
+            console.log("DATA:", data)
+
+            console.log("---------------------")
+            console.log("PART 1...")
+
+            // D. Number of days
+            console.log("Number of days:", data.length)
+
+            // Sort by date (ascending)
+            data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+
+            // E. Earliest date
+            var earliest = data[0]
+            var earliestDate = earliest.timestamp
+            var earliestPrice = parseFloat(earliest.adjusted_close)
+            console.log("Earliest:", earliestDate, formatUSD(earliestPrice))
+
+            // F. Latest date
+            var latest = data[data.length - 1]
+            var latestDate = latest.timestamp
+            var latestPrice = parseFloat(latest.adjusted_close)
+            console.log("Latest:", latestDate, formatUSD(latestPrice))
+
+            // G. Percent change
+            var percentChange = (latestPrice - earliestPrice) / earliestPrice
+            console.log("Percent Change:", formatPct(percentChange))
+
+            console.log("---------------------")
+            console.log("PART 2...")
+
+            document.getElementById("display-symbol").textContent = symbol
+            document.getElementById("display-earliest").textContent = `${earliestDate} (${formatUSD(earliestPrice)})`
+            document.getElementById("display-latest").textContent = `${latestDate} (${formatUSD(latestPrice)})`
+            document.getElementById("display-pct-change").textContent = formatPct(percentChange)
+
+        }).catch(function(error) {
+            console.error("ERROR:", error)
+        })
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>D3 POST Request Example</title>
+  <!-- Include D3 from a CDN -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <h1>D3 POST Request Example</h1>
+  <div id="response"></div>
+
+  <script>
+    // URL of the testing endpoint
+    const url = "https://httpbin.org/post";
+    
+    // Data to be sent in the POST request
+    const postData = {
+      name: "Waldo Ma",
+      email: "waldo@example.com",
+      age: 75
+    };
+
+    // Use d3.json to send the POST request
+    d3.json(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(postData)
+    })
+    .then(data => {
+      console.log("Success:", data);
+      
+      // Display the response on the page
+      d3.select("#response")
+        .html(`
+          <h2>Response Received:</h2>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+          <p>Your data was received by the server and echoed back.</p>
+        `);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      d3.select("#response")
+        .html(`<p style="color:red">Error: ${error.message}</p>`);
+    });
+  </script>
+</body>
+</html>
